@@ -39,10 +39,24 @@
 
         ];
 
+        $negativeResponse = '';
+
+        $newArray = [];
         if (isset($_GET['parking']) && $_GET['parking'] == 'true'){
-            $newArray = [];
             foreach($hotels as $hotelEl){
-                if($hotelEl['parking'] == true){
+                if($hotelEl['parking'] == true && $hotelEl['vote'] == $_GET['vote']){
+                    $newArray[] = $hotelEl;
+                }
+            }
+            $hotels = $newArray;
+            if (empty($newArray)){
+                $negativeResponse = '<h5> Nessun risultato presente </h5>';
+            }
+        }
+        
+        if (isset($_GET['parking']) && $_GET['parking'] == 'false') {
+            foreach($hotels as $hotelEl){
+                if($hotelEl['parking'] == false && $hotelEl['vote'] == $_GET['vote']){
                     $newArray[] = $hotelEl;
                 }
             }
@@ -50,7 +64,7 @@
         }
         
         $selectParking = $_GET['parking'] ?? '';
-        var_dump($selectParking);
+        $selectVote = $_GET['vote'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -72,35 +86,40 @@
     <main>
         <form action="index.php" method="GET" >
             <select name="parking" id="parking">
-                <option value="" disabled selected>Seleziona opzione</option>
+                <option value="">Seleziona opzione</option>
                 <option value="true">Con parcheggio</option>
                 <option value="false">Senza parcheggio</option>
+            </select>
+            <select name="vote" id="vote">
+                <option value="">Seleziona opzione</option>
+                <option value="1">Voto: 1</option>
+                <option value="2">Voto: 2</option>
+                <option value="3">Voto: 3</option>
+                <option value="4">Voto: 4</option>
+                <option value="5">Voto: 5</option>
             </select>
             <button type="submit" >Invia</button>
         </form>
 
+        <div class="response">
         <?php
-
-
-        // if(in_array('parking', $_GET)){
-        //     echo "<h5> Giusto </h5>";
-        // } else {
-        //     echo "<h5> Sbagliato </h5>";
-        // };
+        if($negativeResponse != null){
+            echo $negativeResponse;
+        }
         
         foreach ($hotels as $hotelEl){
-            // foreach ($hotelEl as $key => $value){
-            //     echo "<h2> {$value} </h2>";
-            // }
             echo 
             "<div class='card py-2'>
                 <h2> $hotelEl[name] </h2>
                 <p> $hotelEl[description] </p>
-                <h4> Voto: $hotelEl[vote] </h4>
-                <h4> Distanza dal centro: $hotelEl[distance_to_center] </h4>
+                <h5> Voto: $hotelEl[vote] </h5>
+                <h6> Distanza dal centro: $hotelEl[distance_to_center] </h6>
             </div>";
         }
+
         ?>
+        </div>
+
     </main>
 </body>
 
